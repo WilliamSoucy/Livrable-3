@@ -56,6 +56,40 @@ def dTdt() :
 
 
 
+#Perturbation ( Question Q) ):
+#Changer fonction par dhdt, etc...
+
+def fonctionhauteur(t, x, theta, t_per):
+    u = [Fin, Fv, Fl]
+    
+    if (t > t_per[0]):
+        u = [Fin*0.02, Fv, Fl]
+ 
+    return fun_init(x, theta, u)
+
+def fonctionpression(t, x, theta, t_per):
+    u = [Fin, Fv, Fl]
+    
+    if (t > t_per[0]):
+        u = [Fin*0.02, Fv, Fl]
+ 
+    return fun_init(x, theta, u)
+
+def fonctiontempérature(t, x, theta, t_per):
+    u = [Fin, Fv, Fl]
+    
+    if (t > t_per[0]):
+        u = [Fin*0.02, Fv, Fl]
+ 
+    return fun_init(x, theta, u)
+
+def fonctionmasse(t, x, theta, t_per):
+    u = [Fin, Fv, Fl]
+    
+    if (t > t_per[0]):
+        u = [Fin*0.02, Fv, Fl]
+ 
+    return fun_init(x, theta, u)
 
 
 
