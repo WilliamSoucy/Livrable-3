@@ -59,17 +59,17 @@ def dhdt(L, r, h, rho, Fin, Fl, Fv) :
     dhdt = (1/(rho*dvdh(L, r, h)) * (Fin - Fl - Fv))
     return dhdt
 
-
+thetadmdt = []
 def dmdt():
-    thetadmdt = []
+    [] = thetadmdt
 
-
+thetadpdt = []
 def dpdt() :
-    thetadpdt = []
-    1/M 
+    [] = thetadpdt
 
+thetadTdt = []
 def dTdt() : 
-    thetadTdt = []
+    [] = thetadTdt
 
 
 
@@ -117,3 +117,56 @@ def dmdt_nonlin(t, x, thetadmdt, t_per):
 #Simulation du système ODE non linéarisé
 
 dhdtsim_nlin = solve_ivp(dhdt_nonlin,tspan,0.5, method='RK45', args=(thetadhdt, t_per), max_step=0.01)
+
+dpdtsim_nlin = solve_ivp(dpdt_nonlin,tspan,0.5, method='RK45', args=(thetadpdt, t_per), max_step=0.01)
+
+dTdtsim_nlin = solve_ivp(dTdt_nonlin,tspan,0.5, method='RK45', args=(thetadTdt, t_per), max_step=0.01)
+
+dmdtsim_nlin = solve_ivp(dmdt_nonlin,tspan,0.5, method='RK45', args=(thetadmdt, t_per), max_step=0.01)
+
+
+################################################################################
+
+#Graphiques 
+
+#Variable de perturbation :
+ut_dhdt = np.array([Fin if i < t_per[0] else Fin*1.02 for i in dhdtsim_nlin.t])
+
+plt.plot(dhdtsim_nlin.t, ut_dhdt, 'b-',linewidth=3)
+plt.xlabel('Temps (min)')
+plt.ylabel('Fin')
+plt.title('Variables de perturbation Fin en fonction du temps')
+plt.legend(['Fin'])
+plt.show()
+
+#Variable hauteur :
+plt.plot(dhdtsim_nlin.t, dhdtsim_nlin.y[0], 'b-',linewidth=3)
+plt.xlabel('Temps (min)')
+plt.ylabel('h (m)')
+plt.title("Variable d'état h en fonction du temps ")
+plt.legend(['h (m)'])
+plt.show()
+
+#Variable pression :
+plt.plot(dpdtsim_nlin.t, dhdtsim_nlin.y[0], 'b-',linewidth=3)
+plt.xlabel('Temps (min)')
+plt.ylabel('pression (pa)')
+plt.title("Variable d'état p en fonction du temps ")
+plt.legend(['p (pa)'])
+plt.show()
+
+#Variable température :
+plt.plot(dTdtsim_nlin.t, dhdtsim_nlin.y[0], 'b-',linewidth=3)
+plt.xlabel('Temps (min)')
+plt.ylabel('Température (C)')
+plt.title("Variable d'état T en fonction du temps ")
+plt.legend(['T (C)'])
+plt.show()
+
+#Variable masse :
+plt.plot(dmdtsim_nlin.t, dhdtsim_nlin.y[0], 'b-',linewidth=3)
+plt.xlabel('Temps (min)')
+plt.ylabel('masse (kg)')
+plt.title("Variable d'état m en fonction du temps ")
+plt.legend(['m (kg)'])
+plt.show()
