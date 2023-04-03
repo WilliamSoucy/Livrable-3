@@ -47,16 +47,18 @@ tspan = [0, 20]
 #Fonctions
 
 thetadvdh = [L,r]
-def dvdh(thetadvdh, h) :
+def dvdh(x,thetadvdh, u) :
+    [v]=x
     [L, r] = thetadvdh
     dvdh = (L*r**2)/(r*np.sqrt(1-((r-h)/r)**2)) + L*((-2*h**2+4*h*r-r**2)/np.sqrt(-h**2+2*h*r))
     return dvdh
 
 thetadhdt = [L, r, rho]
-def dhdt(L, r, h, rho, Fin, Fl, Fv) :
+def dhdt(x, thetadhdt, u) :
+    [h] = x
     [L, r, rho] = thetadhdt
     Fl = kf * np.sqrt(h)
-    dhdt = (1/(rho*dvdh(L, r, h)) * (Fin - Fl - Fv))
+    dhdt = (1/(rho*dvdh(x,thetadvdh, u)) * (Fin - Fl - Fv))
     return dhdt
 
 thetadmdt = []
@@ -86,43 +88,43 @@ def dhdt_nonlin(t, x, thetadhdt, t_per):
     return dhdt(x, thetadhdt, u)
 
 
-def dpdt_nonlin(t, x, thetadpdt, t_per):
+'''def dpdt_nonlin(t, x, thetadpdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return dpdt(x, thetadpdt, u)
+    return dpdt(x, thetadpdt, u)'''
 
 
-def dTdt_nonlin(t, x, thetadTdt, t_per):
+"""def dTdt_nonlin(t, x, thetadTdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return dTdt(x, thetadTdt, u)
+    return dTdt(x, thetadTdt, u)"""
 
 
-def dmdt_nonlin(t, x, thetadmdt, t_per):
+'''def dmdt_nonlin(t, x, thetadmdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return dmdt(x, thetadmdt, u)
+    return dmdt(x, thetadmdt, u)'''
 
 ##################################################################################
 
 #Simulation du système ODE non linéarisé
 
-dhdtsim_nlin = solve_ivp(dhdt_nonlin,tspan,0.5, method='RK45', args=(thetadhdt, t_per), max_step=0.01)
+dhdtsim_nlin = solve_ivp(dhdt_nonlin,tspan,[0.5], method='RK45', args=(thetadhdt, t_per), max_step=0.01)
 
-dpdtsim_nlin = solve_ivp(dpdt_nonlin,tspan,0.5, method='RK45', args=(thetadpdt, t_per), max_step=0.01)
+#dpdtsim_nlin = solve_ivp(dpdt_nonlin,tspan,[0.5], method='RK45', args=(thetadpdt, t_per), max_step=0.01)
 
-dTdtsim_nlin = solve_ivp(dTdt_nonlin,tspan,0.5, method='RK45', args=(thetadTdt, t_per), max_step=0.01)
+#dTdtsim_nlin = solve_ivp(dTdt_nonlin,tspan,[0.5], method='RK45', args=(thetadTdt, t_per), max_step=0.01)
 
-dmdtsim_nlin = solve_ivp(dmdt_nonlin,tspan,0.5, method='RK45', args=(thetadmdt, t_per), max_step=0.01)
+#dmdtsim_nlin = solve_ivp(dmdt_nonlin,tspan,[0.5], method='RK45', args=(thetadmdt, t_per), max_step=0.01)
 
 
 ################################################################################
