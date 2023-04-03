@@ -18,32 +18,50 @@ def antoine(T):
     Psat=10**(8.13484-(1662,48)/(T+238.131))
     return Psat
 
+##############################################################
 
-#Constantes 
+#Paramètre
 rho = 0.8 #kg/L
 T_in = 110 #°C
-r = 1
-D = 2*r
-L = 5
+r = 1 #m
+D = 2*r #m
+L = 5 #m
 kf = 317.33
-kp = 0.00057
+kp = 0.00057 
+
+Fin = 57119 / 3600 #kg/s
+
+h = 0.5 #initialement...
+
+Fl = kf * np.sqrt(h)
+
+Fv = Fin-Fl
+
+# Temps de simulation
+t_per = [1]
+tspan = [0, 20]
+
+
+#############################################################
 
 #Fonctions
 
-def dvdh(L, r, h) :
-    thetadvdh = [L, r]
+thetadvdh = [L,r]
+def dvdh(thetadvdh, h) :
+    [L, r] = thetadvdh
     dvdh = (L*r**2)/(r*np.sqrt(1-((r-h)/r)**2)) + L*((-2*h**2+4*h*r-r**2)/np.sqrt(-h**2+2*h*r))
     return dvdh
 
+thetadhdt = [L, r, rho]
 def dhdt(L, r, h, rho, Fin, Fl, Fv) :
-    thetadhdt = [L, r, rho]
+    [L, r, rho] = thetadhdt
     Fl = kf * np.sqrt(h)
     dhdt = (1/(rho*dvdh(L, r, h)) * (Fin - Fl - Fv))
     return dhdt
 
 
-def dMdt():
-    thetadMdt = []
+def dmdt():
+    thetadmdt = []
 
 
 def dpdt() :
@@ -57,40 +75,45 @@ def dTdt() :
 
 
 #Perturbation ( Question Q) ):
-#Changer fonction par dhdt, etc...
+#t_per = temps perturbation
 
-def fonctionhauteur(t, x, theta, t_per):
+def dhdt_nonlin(t, x, thetadhdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return fun_init(x, theta, u)
+    return dhdt(x, thetadhdt, u)
 
-def fonctionpression(t, x, theta, t_per):
+
+def dpdt_nonlin(t, x, thetadpdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return fun_init(x, theta, u)
+    return dpdt(x, thetadpdt, u)
 
-def fonctiontempérature(t, x, theta, t_per):
+
+def dTdt_nonlin(t, x, thetadTdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return fun_init(x, theta, u)
+    return dTdt(x, thetadTdt, u)
 
-def fonctionmasse(t, x, theta, t_per):
+
+def dmdt_nonlin(t, x, thetadmdt, t_per):
     u = [Fin, Fv, Fl]
     
     if (t > t_per[0]):
         u = [Fin*0.02, Fv, Fl]
  
-    return fun_init(x, theta, u)
+    return dmdt(x, thetadmdt, u)
 
+##################################################################################
 
+#Simulation du système ODE non linéarisé
 
-            
+dhdtsim_nlin = solve_ivp(dhdt_nonlin,tspan,0.5, method='RK45', args=(thetadhdt, t_per), max_step=0.01)
