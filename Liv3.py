@@ -36,17 +36,22 @@ def dvdh(L, r, h) :
     return dvdh
 
 def dhdt(L, r, h, rho, Fin, Fl, Fv) :
-    thetadhdh = [L, r, rho]
+    thetadhdt = [L, r, rho]
     Fl = kf * np.sqrt(h)
     dhdt = (1/(rho*dvdh(L, r, h)) * (Fin - Fl - Fv))
     return dhdt
 
+
+def dMdt():
+    thetadMdt = []
+
+
 def dpdt() :
+    thetadpdt = []
     1/M 
 
-def Dtdt()
-
-
+def dTdt() : 
+    thetadTdt = []
 
 
 
