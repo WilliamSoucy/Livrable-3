@@ -54,7 +54,7 @@ def fonc_non_lin(x,theta,u):
     dhdt = (Fin-kf*np.sqrt(h)-Wv)/(rho*dvdh)
     dTdt = (Fin*(integrale_Cp(Tin, 25)-integrale_Cp(Tout, 25))+Q*M_ethanol-Wv*hvap)/(rho*V*cp)
     dmdt = Wv - kf*np.sqrt(h)
-    dPdt = (P/T)*(dTdt)-(P/V)*(1/rho)*(dmdt)+(R*T/(M_ethanol*V))*(Wv-Fv)
+    dPdt = (Wv-Fv)*M_ethanol-dhdt*A*P/(R*T)+dTdt*(-P*V)/(R*T**2)*((R*T)/V)
     
     return [dhdt,dTdt,dmdt, dPdt]
 
